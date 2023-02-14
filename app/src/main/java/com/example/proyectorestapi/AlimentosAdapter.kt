@@ -1,13 +1,12 @@
-package www.iesmurgi.u9_proyprofesoressqlite
+package com.example.proyectorestapi
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.proyectorestapi.R
-import com.example.proyectorestapi.AlimentosViewHolder
+import www.iesmurgi.u9_proyprofesoressqlite.Product
 
 class AlimentosAdapter(
-    private val lista: MutableList<Alimentos>
+    private val lista: MutableList<Alimento>
 ):RecyclerView.Adapter<AlimentosViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlimentosViewHolder { //2.
         val v=LayoutInflater.from(parent.context).inflate(R.layout.usuarios_esqueleto,parent,false)

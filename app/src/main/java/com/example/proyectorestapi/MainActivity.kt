@@ -2,6 +2,7 @@ package com.example.proyectorestapi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.example.proyectorestapi.databinding.ActivityMainBinding
@@ -10,20 +11,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import www.iesmurgi.u9_proyprofesoressqlite.Alimentos
-import www.iesmurgi.u9_proyprofesoressqlite.AlimentosAdapter
+import www.iesmurgi.u9_proyprofesoressqlite.Product
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),SearchView.OnQueryTextListener {
     lateinit var binding: ActivityMainBinding
     private lateinit var adapter: AlimentosAdapter
-    private val alimentos = mutableListOf<Alimentos>()
-    var lista = mutableListOf<Alimentos>()
+    private val alimentos = mutableListOf<Product>()
+    var lista = mutableListOf<Alimento>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.svAlimentos.setOnQueryTextListener(this)
         initRecyclerView()
+        searchByName("04963406")
     }
 
     private fun initRecyclerView() {
@@ -43,16 +45,32 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val call = getRetrofit().create(APIService::class.java).getProductByCode("$query")
             val producto = call.body()
+            println(producto)
             runOnUiThread {
                 if(call.isSuccessful){
-                    //show recyclerview
+                    if (producto != null) {
+                        lista.add(producto)
+                    }
+                    adapter.notifyDataSetChanged()
                 }else{
-                    //show error
+
                 }
             }
         }
 
 
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        println(query)
+        if (!query.isNullOrEmpty()){
+            searchByName(query.lowercase())
+        }
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return true
     }
 
 }
